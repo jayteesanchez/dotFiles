@@ -18,6 +18,7 @@
 [push]
 	default = current
 [alias]
+	cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|development' | xargs -n 1 git branch -d"
 	sha = rev-parse HEAD
 	last = log -1 HEAD --pretty=oneline
 	lastid = rev-parse --short HEAD

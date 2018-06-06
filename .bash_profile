@@ -1,101 +1,6 @@
-#  _              _                        __ _ _
-# | |__  __ _ ___| |__    _ __  _ __ ___  / _(_) | ___
-# | '_ \ / _` / __| '_ \  | '_ \| '__/ _ \| |_| | |/ _ \
-# | |_) | (_| \__ \ | | | | |_) | | | (_) |  _| | |  __/
-# |_.__/ \__,_|___/_| |_| | .__/|_|  \___/|_| |_|_|\___|
-#                         |_|
-
-# When Bash starts, it executes the commands in this script
-# http://en.wikipedia.org/wiki/Bash_(Unix_shell)
-
-# Written by Philip Lamplugh, Instructor General Assembly (2013)
-# Updated by PJ Hughes, Instructor General Assembly (2013)
-
-# =====================
-# Resources
-# =====================
-
-# http://cli.learncodethehardway.org/bash_cheat_sheet.pdf
-# http://ss64.com/bash/syntax-prompt.html
-# https://dougbarton.us/Bash/Bash-prompts.html
-# http://sage.ucsc.edu/xtal/iterm_tab_customization.html
-
-# ====================
-# TOC
-# ====================
-# --------------------
-# System Settings
-# --------------------
-#  Path List
-#  Settings
-#  History
-#  Aliases
-#  Other System Settings
-# --------------------
-# Application Settings
-# --------------------
-#  Application Aliases
-#  rbenv
-#  nvm
-# --------------------
-# Other Settings
-# --------------------
-#  Shortcuts
-#  Source Files
-#  Environmental Variables and API Keys
-#  Colophon
-
-# -----------------------------------------------------------------------------
-# Path
-# A list of all directories in which to look for commands, scripts and programs
-# -----------------------------------------------------------------------------
-
-PATH="$HOME/.rbenv/bin:$PATH"                                       # RBENV
-PATH="/usr/local/share/npm/bin:$PATH"                               # NPM
-PATH="/usr/local/bin:/usr/local/sbin:$PATH"                         # Homebrew
-PATH="/usr/local/heroku/bin:$PATH"                                  # Heroku Toolbelt
-PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"                # Coreutils
-MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"          # Manual pages
-
-# =================
-# Settings
-# =================
-
-# Prefer US English
-export LC_ALL="en_US.UTF-8"
-# use UTF-8
-export LANG="en_US"
-#Hide computer name 
-# export PS1="\u \w \n $ "
-# # Adds colors to LS!!!!
-# export CLICOLOR=1
-# # http://geoff.greer.fm/lscolors/
-# # Describes what color to use for which attribute (files, folders etc.)
-# export LSCOLORS=exfxcxdxbxegedabagacad # PJ: turned off
-# export LS_COLORS="di=34;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:"
-
-# =================
-# History
-# =================
-
-# http://jorge.fbarr.net/2011/03/24/making-your-bash-history-more-efficient/
-# Larger bash history (allow 32³ entries; default is 500)
-export HISTSIZE=32768
-export HISTFILESIZE=$HISTSIZE
-
-# don't put duplicate lines in the history.
-export HISTCONTROL=ignoredups
-
-# ignore same sucessive entries.
-export HISTCONTROL=ignoreboth
-
-# Make some commands not show up in history
-export HISTIGNORE="h"
-
 # ====================
 # Aliases
 # ====================
-
 
 # LS lists information about files.
 # show slashes for directories.
@@ -124,9 +29,6 @@ alias cdw='cd ~/Documents/code'
 # Additional Aliases
 # =================
 
-#Open project files
-alias work-start="cd vms/dev && vagrant up"
-
 # Hide/show all desktop icons (useful when presenting)
 alias hide_desktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
 alias show_desktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
@@ -141,67 +43,31 @@ alias show_files="defaults write com.apple.finder AppleShowAllFiles TRUE && kill
 # http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
 alias rogue='lsof -i TCP:3000 -i TCP:4567 -i TCP:8000 -i TCP:8888 -i TCP:6379'
 
+# Reset Mac DNS cache
+alias resetCache="sudo killall -HUP mDNSResponder"
+
+alias vstatus="vagrant global-status"
+
 
 # ================
 # Application Aliases
 # ================
-
-#Repo Directory
-alias repodir='cd ~/vms/dev/repos'
 
 # Sublime should be symlinked. Otherwise use one of these
 # alias subl='open -a "Sublime Text"'
 # alias subl='open -a "Sublime Text 2"'
 alias chrome='open -a "Google Chrome"'
 
-# =================
-# rbenv
-# =================
 
-# start rbenv (our Ruby environment and version manager) on open
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+# ================
+# Work Aliases
+# ================
 
-# =================
-# nvm (load io.js as node)
-# =================
+#Clear console
+alias c='clear'
 
-#export NVM_DIR=~/.nvm
-#source ~/.nvm/nvm.sh
-#nvm use iojs-v1.6.2 2&> /dev/null
-
-# =================
-# Functions
-# =================
-
-#######################################
-# Start an HTTP server from a directory
-# Arguments:
-#  Port (optional)
-#######################################
-
-server() {
- local port="${1:-8000}"
- open "http://localhost:${port}/"
- # Set the default Content-Type to `text/plain` instead of `application/octet-stream`
- # And serve everything as UTF-8 (although not technically correct, this doesn’t break anything for binary files)
-
- # Simple Pythong Server:
- python -c $'import SimpleHTTPServer;\nmap = SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map;\nmap[""] = "text/plain";\nfor key, value in map.items():\n\tmap[key] = value + ";charset=UTF-8";\nSimpleHTTPServer.test();' "$port"
-
- # Simple Ruby Webrick Server:
- ruby -e "require 'webrick';server = WEBrick::HTTPServer.new(:Port=>${port},:DocumentRoot=>Dir::pwd );trap('INT'){ server.shutdown };server.start"
-}
-
-# =================
-# Tab Improvements
-# =================
-
-## Tab improvements
-# ## Might not need?
-# bind 'set completion-ignore-case on'
-# # make completions appear immediately after pressing TAB once
-# bind 'set show-all-if-ambiguous on'
-# bind 'TAB: menu-complete'
+# Repo Directory
+alias repodir='cd ~/vms/dev/repos'
 
 # =================
 # Sourced Scripts
@@ -237,3 +103,13 @@ alias .....='cd ../../../../'
 # Below here is an area for other commands added by outside programs or
 # commands. Attempt to reserve this area for their use!
 ##########################################################################
+
+set -o vi 
+
+# Setting PATH for Python 3.6
+# The original version is saved in .bash_profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:${PATH}"
+export PATH
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
